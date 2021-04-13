@@ -3,13 +3,12 @@ import java.util.Map;
 
 public class Store {
 
-    public Map<Category, Integer> CategoryProductsMap = new HashMap<>();
+    public Map<Category, Integer> categoryProductsMap = new HashMap<>();
 
-    public Store()
-    {
+    public Store(){
     }
 
-    public void FillStore(Map<Category, Integer> categoryProductsMap)
+    public void fillStore(Map<Category, Integer> categoryProductsMap)
     {
         RandomStorePopulator populator = new RandomStorePopulator();
 
@@ -17,19 +16,19 @@ public class Store {
             for (int i = 0; i < entry.getValue(); i++) {
 
                 Product product = new Product(
-                        populator.GetProductName(entry.getKey().Name),
-                        populator.GetPrice(),
-                        populator.GetRate());
-                entry.getKey().AddProduct(product);
+                        populator.getProductName(entry.getKey().name),
+                        populator.getPrice(),
+                        populator.getRate());
+                entry.getKey().addProduct(product);
             }
         }
-        CategoryProductsMap = categoryProductsMap;
+        this.categoryProductsMap = categoryProductsMap;
     }
 
-    public void PrintAllCategoriesAndProduct()
+    public void printAllCategoriesAndProduct()
     {
-        for (Map.Entry <Category, Integer> entry: CategoryProductsMap.entrySet()) {
-           entry.getKey().PrintAllProduct();
+        for (Map.Entry <Category, Integer> entry: categoryProductsMap.entrySet()) {
+           entry.getKey().printAllProduct();
         }
     }
 }

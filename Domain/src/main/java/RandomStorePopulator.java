@@ -6,7 +6,8 @@ public class RandomStorePopulator {
     public RandomStorePopulator(){
     }
 
-    public String GetProductName(String categoryName){
+    public String getProductName(String categoryName){
+
         switch (categoryName)
         {
             case "Food":
@@ -18,11 +19,13 @@ public class RandomStorePopulator {
         }
     }
 
-    public Double GetPrice() {
+    public Double getPrice() {
+
         return faker.number().randomDouble(1,1, 100);
     }
 
-    public Double GetRate(){
+    public Double getRate(){
+
         return faker.number().randomDouble(1,0, 5);
     }
 }
