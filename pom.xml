@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
-    <artifactId>Project_OnlineStore</artifactId>
+    <artifactId>project_OnlineStore</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>Store</module>
-        <module>Domain</module>
-        <module>ConsoleApp</module>
+        <module>store</module>
+        <module>domain</module>
+        <module>consoleApp</module>
     </modules>
 
     <properties>

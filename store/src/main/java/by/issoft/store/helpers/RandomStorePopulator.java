@@ -1,3 +1,5 @@
+package by.issoft.store.helpers;
+
 import com.github.javafaker.Faker;
 
 public class RandomStorePopulator {
@@ -19,12 +21,12 @@ public class RandomStorePopulator {
         }
     }
 
-    public Double getPrice() {
+    public double getPrice() {
 
         return faker.number().randomDouble(1,1, 100);
     }
 
-    public Double getRate(){
+    public double getRate(){
 
         return faker.number().randomDouble(1,0, 5);
     }
