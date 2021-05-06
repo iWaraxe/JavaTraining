@@ -4,14 +4,20 @@ import by.issoft.domain.Category;
 import by.issoft.domain.Product;
 import by.issoft.store.Store;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
+import by.issoft.store.helpers.comparator.ProductPriceComparator;
+import by.issoft.store.helpers.comparator.ProductXmlComparator;
+import by.issoft.store.helpers.comparator.SortOrder;
+import by.issoft.store.helpers.comparator.XmlReader;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpressionException;
 
 public class StoreHelper {
 
@@ -65,5 +71,25 @@ public class StoreHelper {
         }
 
         return productsToAdd;
+    }
+
+    public ArrayList<Product> sortAllProducts() throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
+        XmlReader xml = new XmlReader();
+        ArrayList<String> compareTo = xml.getAllPropertiesToSort();
+
+        ArrayList<Product> allProducts = this.store.getListOfAllProducts();
+        allProducts.sort(new ProductXmlComparator(compareTo));
+
+        return allProducts;
+    }
+
+    public ArrayList<Product> getTop5() {
+
+        ArrayList<Product> allProducts = this.store.getListOfAllProducts();
+        allProducts.sort(new ProductPriceComparator(SortOrder.DESC));
+
+        ArrayList<Product> top5 = new ArrayList<>(allProducts.subList(0, 5));
+
+        return top5;
     }
 }

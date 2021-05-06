@@ -9,13 +9,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class ProductComparator implements Comparator<Product> {
+public class ProductXmlComparator implements Comparator<Product> {
 
-    public ArrayList<String> compareTo;
+    public ArrayList<String> sortBy;
     SortOrder sortOrder;
 
-    public ProductComparator(ArrayList<String> compareTo){
-     this.compareTo = compareTo;
+    public ProductXmlComparator(ArrayList<String> sortBy){
+     this.sortBy = sortBy;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class ProductComparator implements Comparator<Product> {
         CompareToBuilder compareBuilder = new CompareToBuilder();
 
         try {
-            for (String property : compareTo) {
+            for (String property : sortBy) {
                 sortOrder = xml.getSortOrderByXmlProperty(property);
 
                 switch (property) {
@@ -56,6 +56,7 @@ public class ProductComparator implements Comparator<Product> {
                         System.out.println("Can't perform sorting. Undefined property" + property);
                 }
             }
+
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         } catch (IOException e) {
