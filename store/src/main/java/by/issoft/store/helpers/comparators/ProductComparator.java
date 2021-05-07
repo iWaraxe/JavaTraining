@@ -27,7 +27,8 @@ public class ProductComparator implements Comparator<Product> {
                     compareBuilder.append(this.getPropertyValue(b, item.getKey()), this.getPropertyValue(a, item.getKey()));
                 }
             } catch (Exception e) {
-                System.out.println("Error: the exception is thrown with message: " + e.getMessage());
+                System.out.println("Error: Products were not compared. An exception was thrown with the message: " + e.getMessage());
+                return 0;
             }
         }
 
