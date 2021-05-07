@@ -1,4 +1,4 @@
-package by.issoft.store.helpers.comparator;
+package by.issoft.store.helpers.comparators;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -15,15 +15,16 @@ import java.util.Locale;
 
 public class XmlReader {
 
+    private String configFilePath = "store\\src\\main\\resources\\config.xml";
+
     public ArrayList<String> getAllPropertiesToSort() throws ParserConfigurationException, IOException, SAXException {
 
-        String path = "store\\src\\main\\resources\\config.xml";
         String sortTag = "sort";
         ArrayList<String> properties = new ArrayList<>();
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
-        Document document = builder.parse(path);
+        Document document = builder.parse(configFilePath);
 
         Node node = document.getElementsByTagName(sortTag).item(0);
         NodeList sortProperties = node.getChildNodes();
@@ -31,6 +32,7 @@ public class XmlReader {
         Element elementary;
         for (int i = 0; i < sortProperties.getLength(); i++) {
 
+            //get all child tag names from config file and add them in properties list
             if (sortProperties.item(i).getNodeType() == Node.ELEMENT_NODE) {
                 elementary = (Element) sortProperties.item(i);
 
@@ -42,11 +44,9 @@ public class XmlReader {
 
     public SortOrder getSortOrderByXmlProperty(String propertyName) throws ParserConfigurationException, IOException, SAXException {
 
-        String path = "store\\src\\main\\resources\\config.xml";
-
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
-        Document document = builder.parse(path);
+        Document document = builder.parse(configFilePath);
         String propertyValue = document.getElementsByTagName(propertyName).item(0).getTextContent();
 
         SortOrder sortOrder = SortOrder.valueOf(propertyValue.toUpperCase(Locale.ROOT));

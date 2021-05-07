@@ -1,4 +1,4 @@
-package by.issoft.store.helpers.comparator;
+package by.issoft.store.helpers.comparators;
 
 import by.issoft.domain.Product;
 import org.apache.commons.lang3.builder.CompareToBuilder;
