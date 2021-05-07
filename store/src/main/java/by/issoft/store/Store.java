@@ -4,10 +4,11 @@ import by.issoft.domain.Category;
 import by.issoft.domain.Product;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Store {
 
-    public ArrayList<Category> categoryList = new ArrayList<>();
+    public List<Category> categoryList = new ArrayList<>();
 
     public void printAllCategoriesAndProduct() {
 
@@ -16,16 +17,16 @@ public class Store {
         }
     }
 
-    public void printListProducts(ArrayList<Product> products) {
+    public void printListProducts(List<Product> products) {
 
         for (Product product : products) {
             System.out.println(product.toString());
         }
     }
 
-    public ArrayList<Product> getListOfAllProducts() {
+    public List<Product> getListOfAllProducts() {
 
-        ArrayList<Product> allProducts = new ArrayList<Product>();
+        List<Product> allProducts = new ArrayList<>();
 
         for (Category category : this.categoryList) {
             allProducts.addAll(category.productList);

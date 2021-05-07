@@ -4,17 +4,14 @@ import by.issoft.domain.Category;
 import by.issoft.domain.Product;
 import by.issoft.store.Store;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-import by.issoft.store.helpers.comparators.ProductPriceComparator;
-import by.issoft.store.helpers.comparators.ProductXmlComparator;
+import by.issoft.store.helpers.comparators.ProductComparator;
 import by.issoft.store.helpers.comparators.SortOrder;
 import by.issoft.store.helpers.comparators.XmlReader;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
-import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -72,30 +69,33 @@ public class StoreHelper {
         return productsToAdd;
     }
 
-    public ArrayList<Product> sortAllProducts() throws IOException, SAXException, ParserConfigurationException {
-        XmlReader xml = new XmlReader();
-        ArrayList<String> sortBy = xml.getAllPropertiesToSort();
+    public List<Product> sortAllProducts() throws Exception {
+        Map<String, String> sortBy;
+        try {
+            XmlReader xml = new XmlReader();
+             sortBy = xml.getAllPropertiesToSort();
+        }
+        catch (ParserConfigurationException e){
+            throw new Exception("Error: Config file exception.");
+        }
+        return sortAllProducts(sortBy);
+    }
 
-        ArrayList<Product> allProducts = this.store.getListOfAllProducts();
-        allProducts.sort(new ProductXmlComparator(sortBy));
+    public List<Product> sortAllProducts(Map sortBy) {
+
+        List<Product> allProducts = this.store.getListOfAllProducts();
+        allProducts.sort(new ProductComparator(sortBy));
 
         return allProducts;
     }
 
-    public ArrayList<Product> sortAllProducts(ArrayList<String> sortBy) {
+    public List<Product> getTop5() {
 
-        ArrayList<Product> allProducts = this.store.getListOfAllProducts();
-        allProducts.sort(new ProductXmlComparator(sortBy));
+        Map<String, String> sortBy = new HashMap<>();
+        sortBy.put("price", SortOrder.DESC.toString());
 
-        return allProducts;
-    }
-
-    public ArrayList<Product> getTop5() {
-
-        ArrayList<Product> allProducts = this.store.getListOfAllProducts();
-        allProducts.sort(new ProductPriceComparator(SortOrder.DESC));
-
-        ArrayList<Product> top5 = new ArrayList<>(allProducts.subList(0, 5));
+        List<Product> sortedList = sortAllProducts(sortBy);
+        List<Product> top5 = new ArrayList<>(sortedList.subList(0, 5));
 
         return top5;
     }
