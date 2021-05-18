@@ -81,7 +81,7 @@ public class StoreHelper {
         return sortAllProducts(sortBy);
     }
 
-    public List<Product> sortAllProducts(Map sortBy) {
+    public List<Product> sortAllProducts(Map<String, String> sortBy) {
 
         List<Product> allProducts = this.store.getListOfAllProducts();
         allProducts.sort(new ProductComparator(sortBy));
