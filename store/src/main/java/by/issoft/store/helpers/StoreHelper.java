@@ -5,13 +5,15 @@ import by.issoft.domain.Product;
 import by.issoft.store.Store;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
+import by.issoft.store.helpers.comparators.ProductComparator;
+import by.issoft.store.helpers.comparators.SortOrder;
+import by.issoft.store.helpers.comparators.XmlReader;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 public class StoreHelper {
 
@@ -65,5 +67,36 @@ public class StoreHelper {
         }
 
         return productsToAdd;
+    }
+
+    public List<Product> sortAllProducts() throws Exception {
+        Map<String, String> sortBy;
+        try {
+            XmlReader xml = new XmlReader();
+             sortBy = xml.getAllPropertiesToSort();
+        }
+        catch (ParserConfigurationException e){
+            throw new Exception("Error: Config file exception.");
+        }
+        return sortAllProducts(sortBy);
+    }
+
+    public List<Product> sortAllProducts(Map<String, String> sortBy) {
+
+        List<Product> allProducts = this.store.getListOfAllProducts();
+        allProducts.sort(new ProductComparator(sortBy));
+
+        return allProducts;
+    }
+
+    public List<Product> getTop5() {
+
+        Map<String, String> sortBy = new HashMap<>();
+        sortBy.put("price", SortOrder.DESC.toString());
+
+        List<Product> sortedList = sortAllProducts(sortBy);
+        List<Product> top5 = new ArrayList<>(sortedList.subList(0, 5));
+
+        return top5;
     }
 }
