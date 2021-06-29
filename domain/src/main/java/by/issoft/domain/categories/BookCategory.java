@@ -4,6 +4,6 @@ import by.issoft.domain.Category;
 
 public class BookCategory extends Category {
     public BookCategory() {
-        super(CategoryName.Book.name());
+        super(CategoryEnum.Book.name());
     }
 }

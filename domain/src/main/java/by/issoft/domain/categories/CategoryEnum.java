@@ -1,6 +1,6 @@
 package by.issoft.domain.categories;
 
-public enum CategoryName {
+public enum CategoryEnum {
     Book,
     Food
 }

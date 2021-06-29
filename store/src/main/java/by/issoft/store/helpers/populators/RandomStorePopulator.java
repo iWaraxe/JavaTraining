@@ -1,33 +1,34 @@
 package by.issoft.store.helpers.populators;
 
-import by.issoft.domain.categories.CategoryName;
+import by.issoft.domain.Product;
+import by.issoft.domain.categories.CategoryEnum;
+import by.issoft.domain.products.Book;
+import by.issoft.domain.products.Food;
 import com.github.javafaker.Faker;
 
 public class RandomStorePopulator implements IPopulator {
     private Faker faker = new Faker();
 
     @Override
-    public String getName(CategoryName categoryName){
+    public Product getProductForCategory(CategoryEnum categoryName){
 
         switch (categoryName)
         {
             case Food:
-                return faker.food().ingredient();
+                return new Food(faker.food().ingredient(), getPrice(), getRate());
             case Book:
-                return faker.book().title();
+                return new Book(faker.book().title(), getPrice(), getRate());
             default:
                 return null;
         }
     }
 
-    @Override
-    public double getPrice() {
+    private double getPrice() {
 
         return faker.number().randomDouble(1,1, 100);
     }
 
-    @Override
-    public double getRate(){
+    private double getRate(){
 
         return faker.number().randomDouble(1,0, 5);
     }

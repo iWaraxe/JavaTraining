@@ -1,12 +1,9 @@
 package by.issoft.store.helpers.populators;
 
-import by.issoft.domain.categories.CategoryName;
+import by.issoft.domain.Product;
+import by.issoft.domain.categories.CategoryEnum;
 
 public interface IPopulator {
 
-    public String getName(CategoryName categoryName);
-
-    public double getPrice();
-
-    public double getRate();
+    public Product getProductForCategory(CategoryEnum categoryName);
 }

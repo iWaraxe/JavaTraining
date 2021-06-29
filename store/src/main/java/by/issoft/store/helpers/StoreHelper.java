@@ -2,7 +2,7 @@ package by.issoft.store.helpers;
 
 import by.issoft.domain.Category;
 import by.issoft.domain.Product;
-import by.issoft.domain.categories.CategoryName;
+import by.issoft.domain.categories.CategoryEnum;
 import by.issoft.store.Store;
 
 import java.lang.reflect.InvocationTargetException;
@@ -32,10 +32,7 @@ public class StoreHelper {
         for (Map.Entry<Category, Integer> entry : categoryProductsMapToAdd.entrySet()) {
             for (int i = 0; i < entry.getValue(); i++) {
 
-                Product product = new Product(
-                        populator.getName(CategoryName.valueOf(entry.getKey().name)),
-                        populator.getPrice(),
-                        populator.getRate());
+                Product product = populator.getProductForCategory(CategoryEnum.valueOf(entry.getKey().name));
                 entry.getKey().addProduct(product);
             }
 
