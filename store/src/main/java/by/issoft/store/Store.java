@@ -3,12 +3,12 @@ package by.issoft.store;
 import by.issoft.domain.Category;
 import by.issoft.domain.Product;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Store {
 
     public List<Category> categoryList = new ArrayList<>();
+    public static List<Product> purchasedProductList = new ArrayList<>();
 
     public void printAllCategoriesAndProduct() {
 
