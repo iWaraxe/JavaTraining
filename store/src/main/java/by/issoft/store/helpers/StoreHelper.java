@@ -2,6 +2,7 @@ package by.issoft.store.helpers;
 
 import by.issoft.domain.Category;
 import by.issoft.domain.Product;
+import by.issoft.domain.categories.CategoryEnum;
 import by.issoft.store.Store;
 
 import java.lang.reflect.InvocationTargetException;
@@ -12,6 +13,7 @@ import java.util.concurrent.Executors;
 import by.issoft.store.helpers.comparators.ProductComparator;
 import by.issoft.store.helpers.comparators.SortOrder;
 import by.issoft.store.helpers.comparators.XmlReader;
+import by.issoft.store.helpers.populators.IPopulator;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 
@@ -26,18 +28,14 @@ public class StoreHelper {
         this.store = store;
     }
 
-    public void fillStoreRandomly() {
+    public void fillStore(IPopulator populator) {
 
-        RandomStorePopulator populator = new RandomStorePopulator();
         Map<Category, Integer> categoryProductsMapToAdd = createProductListToAdd();
 
         for (Map.Entry<Category, Integer> entry : categoryProductsMapToAdd.entrySet()) {
             for (int i = 0; i < entry.getValue(); i++) {
 
-                Product product = new Product(
-                        populator.getProductName(entry.getKey().name),
-                        populator.getPrice(),
-                        populator.getRate());
+                Product product = populator.getProductForCategory(CategoryEnum.valueOf(entry.getKey().name));
                 entry.getKey().addProduct(product);
             }
 
