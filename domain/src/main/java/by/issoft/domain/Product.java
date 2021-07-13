@@ -1,6 +1,6 @@
 package by.issoft.domain;
 
-public abstract class Product {
+public class Product {
     public String name;
     public double price;
     public double rate;
