@@ -27,7 +27,6 @@ public class Category {
         System.out.println(String.format("%s", "----------------------------------------------------------------------------------------------------------------"));
 
         for (Product product : productList) {
-
             System.out.println(product.toString());
         }
     }

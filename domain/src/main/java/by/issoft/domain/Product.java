@@ -2,10 +2,11 @@ package by.issoft.domain;
 
 public class Product {
     public String name;
-    public Double price;
-    public Double rate;
+    public double price;
+    public double rate;
 
     public Product(String name, double price, double rate) {
+
         this.name = name;
         this.price = price;
         this.rate = rate;

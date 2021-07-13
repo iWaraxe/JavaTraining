@@ -2,6 +2,8 @@ package by.issoft.consoleApp;
 
 import by.issoft.store.Store;
 import by.issoft.store.helpers.StoreHelper;
+import by.issoft.store.helpers.populators.IPopulator;
+import by.issoft.store.helpers.populators.RandomStorePopulator;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -13,7 +15,8 @@ public class StoreApp {
             Store onlineStore = new Store();
             StoreHelper storeHelper = new StoreHelper(onlineStore);
 
-            storeHelper.fillStoreRandomly();
+            IPopulator populator = new RandomStorePopulator();
+            storeHelper.fillStore(populator);
             onlineStore.printAllCategoriesAndProduct();
 
             // Enter data using BufferReader

@@ -38,7 +38,7 @@ public class ProductComparator implements Comparator<Product> {
     private String getPropertyValue(Product product, String property) throws Exception {
 
         try {
-            String propertyValue = product.getClass().getDeclaredField(property).get(product).toString();
+            String propertyValue = product.getClass().getField(property).get(product).toString();
             return propertyValue;
         }
         catch (NoSuchFieldException | IllegalAccessException ex){
