@@ -1,6 +1,7 @@
 package by.issoft.consoleApp;
 
 import by.issoft.store.Store;
+import by.issoft.store.helpers.populators.DBPopulator;
 import by.issoft.store.helpers.populators.IPopulator;
 import by.issoft.store.helpers.populators.RandomStorePopulator;
 import by.issoft.store.helpers.StoreHelper;
@@ -8,16 +9,38 @@ import by.issoft.store.helpers.TimerCleanupTask;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Timer;
 
 public class StoreApp {
 
+    private static final String DB_DRIVER = "org.h2.Driver";
+    private static final String DB_CONNECTION = "jdbc:h2:~/OnlineStore";
+    private static final String DB_USER = "user";
+    private static final String DB_PASSWORD = "password";
+
     public static void main(String[] args) {
+
+        Connection connection = null;
+        IPopulator populator;
+
         try {
             Store onlineStore = new Store();
             StoreHelper storeHelper = new StoreHelper(onlineStore);
 
-            IPopulator populator = new RandomStorePopulator();
+            boolean useDb = true;
+
+            if(useDb)
+            {
+                connection = getDBConnection();
+                populator = new DBPopulator(connection);
+            }
+            else {
+                populator = new RandomStorePopulator();
+            }
+
             storeHelper.fillStore(populator);
             onlineStore.printAllCategoriesAndProduct();
 
@@ -28,7 +51,7 @@ public class StoreApp {
             Timer timer = new Timer();
             timer.schedule(new TimerCleanupTask(), 0,60000);
 
-            Boolean flag = true;
+            boolean flag = true;
             while (flag) {
 
                 System.out.println("Enter command sort/top/createOrder/quit:");
@@ -58,9 +81,46 @@ public class StoreApp {
                     default:
                         System.out.println("The command is not recognized.");
                 }
+
+                if(useDb){
+
+                    closeDBConnection(connection);
+                }
             }
         } catch (Exception e) {
             System.out.println("Error: the exception was thrown with message:" + e.getMessage());
+        }
+    }
+
+    private static Connection getDBConnection() {
+
+        Connection dbConnection;
+
+        try {
+            Class.forName(DB_DRIVER);
+
+        } catch (ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            dbConnection = DriverManager.getConnection(DB_CONNECTION, DB_USER, DB_PASSWORD);
+            return dbConnection;
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return null;
+    }
+
+    private static void closeDBConnection(Connection connection) {
+
+        try {
+            connection.close();
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
     }
 }

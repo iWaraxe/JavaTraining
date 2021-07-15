@@ -1,24 +1,75 @@
 package by.issoft.store.helpers.populators;
 
+import by.issoft.domain.Category;
 import by.issoft.domain.Product;
 import by.issoft.domain.categories.CategoryEnum;
 import com.github.javafaker.Faker;
+import org.reflections.Reflections;
+import org.reflections.scanners.SubTypesScanner;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 public class RandomStorePopulator implements IPopulator {
     private Faker faker = new Faker();
 
     @Override
-    public Product getProductForCategory(CategoryEnum categoryName){
+    public List<Category> getCategories() {
 
-        switch (categoryName)
+        List<Category>  categories = new ArrayList<>();
+
+        Reflections reflections = new Reflections("by.issoft.domain.categories", new SubTypesScanner());
+        //Get all existed subtypes of Category
+        Set<Class<? extends Category>> subTypes = reflections.getSubTypesOf(Category.class);
+
+        //add all existing categories to the list
+        for (Class<? extends Category> type : subTypes) {
+            try {
+                categories.add(type.getConstructor().newInstance());
+
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return categories;
+    }
+
+    @Override
+    public List<Product> getProductsForCategory(CategoryEnum category){
+
+        List<Product> resultList = new ArrayList<>();
+        Random random = new Random();
+        int productCount = random.nextInt(10);
+
+        switch (category)
         {
             case Food:
-                return new Product(faker.food().ingredient(), getPrice(), getRate());
+                for (int i = 0; i < productCount; i++) {
+
+                    resultList.add(new Product(faker.food().ingredient(), getPrice(), getRate()));
+                }
+                break;
             case Book:
-                return new Product(faker.book().title(), getPrice(), getRate());
+                for (int i = 0; i < productCount; i++) {
+
+                    resultList.add(new Product(faker.book().title(), getPrice(), getRate()));
+                }
+                break;
             default:
                 return null;
         }
+
+        return resultList;
     }
 
     private double getPrice() {

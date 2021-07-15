@@ -5,7 +5,6 @@ import by.issoft.domain.Product;
 import by.issoft.domain.categories.CategoryEnum;
 import by.issoft.store.Store;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -14,8 +13,6 @@ import by.issoft.store.helpers.comparators.ProductComparator;
 import by.issoft.store.helpers.comparators.SortOrder;
 import by.issoft.store.helpers.comparators.XmlReader;
 import by.issoft.store.helpers.populators.IPopulator;
-import org.reflections.Reflections;
-import org.reflections.scanners.SubTypesScanner;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -30,44 +27,15 @@ public class StoreHelper {
 
     public void fillStore(IPopulator populator) {
 
-        Map<Category, Integer> categoryProductsMapToAdd = createProductListToAdd();
+        List<Category> categories = populator.getCategories();
+        this.store.categoryList.addAll(categories);
 
-        for (Map.Entry<Category, Integer> entry : categoryProductsMapToAdd.entrySet()) {
-            for (int i = 0; i < entry.getValue(); i++) {
+        //fill store with products for each category
+        for (Category category : categories) {
 
-                Product product = populator.getProductForCategory(CategoryEnum.valueOf(entry.getKey().name));
-                entry.getKey().addProduct(product);
-            }
-
-            this.store.categoryList.add(entry.getKey());
+            List<Product> products = populator.getProductsForCategory(CategoryEnum.valueOf(category.name));
+            category.addProducts(products);
         }
-    }
-
-    private static Map<Category, Integer> createProductListToAdd() {
-        Map<Category, Integer> productsToAdd = new HashMap<>();
-
-        Reflections reflections = new Reflections("by.issoft.domain.categories", new SubTypesScanner());
-        //Get all existed subtypes of Category
-        Set<Class<? extends Category>> subTypes = reflections.getSubTypesOf(Category.class);
-
-        //Create a random number of random products for each category
-        for (Class<? extends Category> type : subTypes) {
-            try {
-                Random random = new Random();
-                productsToAdd.put(type.getConstructor().newInstance(), random.nextInt(10));
-
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return productsToAdd;
     }
 
     public List<Product> sortAllProducts() throws Exception {
@@ -103,30 +71,30 @@ public class StoreHelper {
 
     public void createOrder(String productName) {
 
-        System.out.println(String.format("%s", "createOrder() is started " + Thread.currentThread().getName()));
+        System.out.printf("%s%n", "createOrder() is started " + Thread.currentThread().getName());
 
         Product orderedProduct = getOrderedProduct(productName);
         int threadTime = new Random().nextInt(30);
 
         executorService.execute(() -> {
             try {
-                System.out.println(String.format("Starting order thread %s", Thread.currentThread().getName()));
+                System.out.printf("Starting order thread %s%n", Thread.currentThread().getName());
                 store.purchasedProductList.add(orderedProduct);
 
-                System.out.println(String.format("Actual purchased product list:createOrder "));
+                System.out.println("Actual purchased product list:createOrder ");
                 store.printListProducts( store.purchasedProductList);
 
-                System.out.println(String.format("Sleeping for " + threadTime));
+                System.out.println("Sleeping for " + threadTime);
                 Thread.sleep(threadTime * 1000);
 
-                System.out.println(String.format("Finishing order thread %s", Thread.currentThread().getName()));
+                System.out.printf("Finishing order thread %s%n", Thread.currentThread().getName());
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         });
 
-        System.out.println(String.format("createOrder() is finished " + Thread.currentThread().getName()));
+        System.out.println("createOrder() is finished " + Thread.currentThread().getName());
     }
 
     public void shutdownThreads(){

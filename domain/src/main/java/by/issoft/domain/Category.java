@@ -12,19 +12,19 @@ public class Category {
         this.name = name;
     }
 
-    public void addProduct(Product product) {
+    public void addProducts(List<Product> products) {
         if (productList == null) {
             productList = new ArrayList<>();
         }
 
-        productList.add(product);
+        productList.addAll(products);
     }
 
     public void printAllProduct() {
 
-        System.out.println(String.format("%s", "----------------------------------------------------------------------------------------------------------------"));
+        System.out.printf("%s%n", "----------------------------------------------------------------------------------------------------------------");
         System.out.println("Category " + name + " : ");
-        System.out.println(String.format("%s", "----------------------------------------------------------------------------------------------------------------"));
+        System.out.println("----------------------------------------------------------------------------------------------------------------");
 
         for (Product product : productList) {
             System.out.println(product.toString());
