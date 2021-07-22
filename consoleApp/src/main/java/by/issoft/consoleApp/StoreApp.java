@@ -1,6 +1,7 @@
 package by.issoft.consoleApp;
 
 import by.issoft.store.Store;
+import by.issoft.store.helpers.DBManager;
 import by.issoft.store.helpers.populators.DBPopulator;
 import by.issoft.store.helpers.populators.IPopulator;
 import by.issoft.store.helpers.populators.RandomStorePopulator;
@@ -9,22 +10,14 @@ import by.issoft.store.helpers.TimerCleanupTask;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.Timer;
 
 public class StoreApp {
 
-    private static final String DB_DRIVER = "org.h2.Driver";
-    private static final String DB_CONNECTION = "jdbc:h2:~/OnlineStore";
-    private static final String DB_USER = "user";
-    private static final String DB_PASSWORD = "password";
-
     public static void main(String[] args) {
 
-        Connection connection = null;
         IPopulator populator;
+        DBManager dbManager = null;
 
         try {
             Store onlineStore = new Store();
@@ -34,8 +27,8 @@ public class StoreApp {
 
             if(useDb)
             {
-                connection = getDBConnection();
-                populator = new DBPopulator(connection);
+                dbManager = new DBManager();
+                populator = new DBPopulator(dbManager);
             }
             else {
                 populator = new RandomStorePopulator();
@@ -76,51 +69,22 @@ public class StoreApp {
                         timer.cancel();
                         storeHelper.shutdownThreads();
 
+                        if (dbManager != null) {
+                            dbManager.dispose();
+                        }
+
                         flag = false;
                         break;
                     default:
                         System.out.println("The command is not recognized.");
                 }
-
-                if(useDb){
-
-                    closeDBConnection(connection);
-                }
             }
         } catch (Exception e) {
-            System.out.println("Error: the exception was thrown with message:" + e.getMessage());
-        }
-    }
+            System.out.println("Error: the exception was thrown with message:" + e.getLocalizedMessage());
 
-    private static Connection getDBConnection() {
-
-        Connection dbConnection;
-
-        try {
-            Class.forName(DB_DRIVER);
-
-        } catch (ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-
-        try {
-            dbConnection = DriverManager.getConnection(DB_CONNECTION, DB_USER, DB_PASSWORD);
-            return dbConnection;
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-
-        return null;
-    }
-
-    private static void closeDBConnection(Connection connection) {
-
-        try {
-            connection.close();
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            if (dbManager != null) {
+                dbManager.dispose();
+            }
         }
     }
 }

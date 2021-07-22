@@ -30,14 +30,8 @@ public class RandomStorePopulator implements IPopulator {
             try {
                 categories.add(type.getConstructor().newInstance());
 
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                System.out.println("Exception was thrown with message:" + e.getLocalizedMessage());
             }
         }
 
@@ -62,8 +56,8 @@ public class RandomStorePopulator implements IPopulator {
             case Book:
                 for (int i = 0; i < productCount; i++) {
 
-                    resultList.add(new Product(faker.book().title(), getPrice(), getRate()));
-                }
+                resultList.add(new Product(faker.book().title(), getPrice(), getRate()));
+            }
                 break;
             default:
                 return null;
