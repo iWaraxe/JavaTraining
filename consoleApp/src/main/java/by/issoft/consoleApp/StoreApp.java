@@ -25,8 +25,7 @@ public class StoreApp {
 
             boolean useDb = true;
 
-            if(useDb)
-            {
+            if(useDb) {
                 dbManager = new DBManager();
                 populator = new DBPopulator(dbManager);
             }

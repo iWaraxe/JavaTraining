@@ -7,7 +7,6 @@ import com.github.javafaker.Faker;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -45,34 +44,41 @@ public class RandomStorePopulator implements IPopulator {
         Random random = new Random();
         int productCount = random.nextInt(10);
 
-        switch (category)
-        {
-            case Food:
-                for (int i = 0; i < productCount; i++) {
+        resultList.addAll(generateProductList(category, productCount));
 
-                    resultList.add(new Product(faker.food().ingredient(), getPrice(), getRate()));
-                }
-                break;
-            case Book:
-                for (int i = 0; i < productCount; i++) {
+        return resultList;
+    }
 
-                resultList.add(new Product(faker.book().title(), getPrice(), getRate()));
-            }
-                break;
-            default:
-                return null;
+    private List<Product> generateProductList(CategoryEnum category, int count) {
+        List<Product> resultList = new ArrayList<>();
+
+        for (int i = 0; i < count; i++) {
+
+            resultList.add(new Product(generateFakeProductName(category), getPrice(), getRate()));
         }
 
         return resultList;
     }
 
-    private double getPrice() {
+    private String generateFakeProductName(CategoryEnum category) {
 
-        return faker.number().randomDouble(1,1, 100);
+        switch (category) {
+            case Food:
+                return faker.food().ingredient();
+            case Book:
+                return faker.book().title();
+            default:
+                return null;
+        }
     }
 
-    private double getRate(){
+    private double getPrice() {
 
-        return faker.number().randomDouble(1,0, 5);
+        return faker.number().randomDouble(1, 1, 100);
+    }
+
+    private double getRate() {
+
+        return faker.number().randomDouble(1, 0, 5);
     }
 }
