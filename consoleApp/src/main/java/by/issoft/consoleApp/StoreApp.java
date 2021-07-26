@@ -17,7 +17,6 @@ public class StoreApp {
     public static void main(String[] args) {
 
         IPopulator populator;
-        DBManager dbManager = null;
 
         try {
             Store onlineStore = new Store();
@@ -26,8 +25,7 @@ public class StoreApp {
             boolean useDb = true;
 
             if(useDb) {
-                dbManager = new DBManager();
-                populator = new DBPopulator(dbManager);
+                populator = new DBPopulator();
             }
             else {
                 populator = new RandomStorePopulator();
@@ -68,10 +66,6 @@ public class StoreApp {
                         timer.cancel();
                         storeHelper.shutdownThreads();
 
-                        if (dbManager != null) {
-                            dbManager.dispose();
-                        }
-
                         flag = false;
                         break;
                     default:
@@ -80,10 +74,6 @@ public class StoreApp {
             }
         } catch (Exception e) {
             System.out.println("Error: the exception was thrown with message:" + e.getLocalizedMessage());
-
-            if (dbManager != null) {
-                dbManager.dispose();
-            }
         }
     }
 }
