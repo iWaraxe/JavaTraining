@@ -7,7 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DBManager {
+public class DBManager implements IDBManager {
 
     private static final String DB_DRIVER = "org.h2.Driver";
     private static final String DB_CONNECTION = "jdbc:h2:~/OnlineStore";
@@ -26,7 +26,8 @@ public class DBManager {
         }
     }
 
-    public static boolean createTableIfDoesNotExist() throws Exception {
+    @Override
+    public boolean createTableIfDoesNotExist() throws Exception {
         boolean isTableJustCreated = false;
 
         if (!doesTableExist(TABLE_CATEGORY_NAME)) {
@@ -44,7 +45,8 @@ public class DBManager {
         return isTableJustCreated;
     }
 
-    public static List<Category> getAllCategories() throws SQLException {
+    @Override
+    public List<Category> getAllCategories() throws SQLException {
         List<Category> categories = new ArrayList<>();
 
         Statement stmt;
@@ -60,37 +62,41 @@ public class DBManager {
         return categories;
     }
 
-    public static List<Product> getProductsForCategory(String categoryName) throws SQLException {
+    @Override
+    public List<Product> getProductsForCategory(String categoryName) throws SQLException {
         List<Product> productsFromDb = new ArrayList<>();
 
         Statement stmt;
         stmt = connection.createStatement();
 
-        stmt.execute(String.format("SELECT * FROM %s WHERE category= %s", TABLE_PRODUCT_NAME, TABLE_CATEGORY_NAME, categoryName));
+        String getCategoryIdCommand = String.format("SELECT id FROM %s WHERE category='%s'", TABLE_CATEGORY_NAME, categoryName);
+        stmt.execute(String.format("SELECT * FROM %s WHERE category_id= %s", TABLE_PRODUCT_NAME, getCategoryIdCommand));
 
         ResultSet rs = stmt.getResultSet();
 
-        while(rs.next())
-        {
-            productsFromDb.add(new Product(rs.getString("name"),rs.getDouble("price"), rs.getDouble("rate")));
+        while (rs.next()) {
+            productsFromDb.add(new Product(rs.getString("name"), rs.getDouble("price"), rs.getDouble("rate")));
         }
 
         return productsFromDb;
     }
 
-    public void insertCategoryIntoTable(String categoryName) throws SQLException {
+    @Override
+    public void insertCategoryIntoDB(String categoryName) throws SQLException {
         Statement stmt;
         stmt = connection.createStatement();
 
         stmt.execute(String.format("INSERT INTO %s(category) VALUES('%s')", TABLE_CATEGORY_NAME, categoryName));
     }
 
-    public void insertProductIntoTable(String name, String category, double price, double rate) throws SQLException {
+    @Override
+    public void insertProductIntoDB(String name, String category, double price, double rate) throws SQLException {
         Statement stmt;
         stmt = connection.createStatement();
 
-        stmt.execute(String.format("INSERT INTO %s(name,category,price,rate) VALUES('%s','%s',%f,%f)",
-                TABLE_PRODUCT_NAME,  name, category, price, rate));
+        String getCategoryIdCommand = String.format("SELECT id FROM %s WHERE category='%s'", TABLE_CATEGORY_NAME, category);
+        stmt.execute(String.format("INSERT INTO %s(name,category_id,price,rate) VALUES('%s',%s,%f,%f)",
+                TABLE_PRODUCT_NAME,  name, getCategoryIdCommand, price, rate));
 
     }
 
@@ -106,8 +112,8 @@ public class DBManager {
 
         Statement stmt;
         stmt = connection.createStatement();
-        stmt.execute(String.format("CREATE TABLE %s (id INTEGER IDENTITY PRIMARY KEY, name VARCHAR(50) UNIQUE, category VARCHAR(50) NOT NULL, price DECIMAL (4, 2), rate DECIMAL (2, 1)," +
-                "FOREIGN KEY (category) REFERENCES %s (category) ON DELETE CASCADE ON UPDATE CASCADE)", TABLE_PRODUCT_NAME, TABLE_CATEGORY_NAME));
+        stmt.execute(String.format("CREATE TABLE %s (id INTEGER IDENTITY PRIMARY KEY, name VARCHAR(50) UNIQUE, category_id INTEGER NOT NULL, price DECIMAL (4, 2), rate DECIMAL (2, 1)," +
+                "FOREIGN KEY (category_id) REFERENCES %s (id) ON DELETE CASCADE ON UPDATE CASCADE)", TABLE_PRODUCT_NAME, TABLE_CATEGORY_NAME));
 
         stmt.close();
         connection.commit();
@@ -123,7 +129,8 @@ public class DBManager {
         connection.commit();
     }
 
-    private static Connection getDBConnection() {
+    @Override
+    public Connection getDBConnection() {
 
         try {
             Class.forName(DB_DRIVER);
@@ -142,7 +149,7 @@ public class DBManager {
         return null;
     }
 
-    private static void closeDBConnection() {
+    private void closeDBConnection() {
 
         try {
             if (connection != null) {
@@ -154,7 +161,8 @@ public class DBManager {
         }
     }
 
-    public static void dispose() {
+    @Override
+    public void dispose() {
 
         closeDBConnection();
         connection = null;

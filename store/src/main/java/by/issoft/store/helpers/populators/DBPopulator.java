@@ -4,17 +4,23 @@ import by.issoft.domain.Category;
 import by.issoft.domain.Product;
 import by.issoft.domain.categories.CategoryEnum;
 import by.issoft.store.helpers.DBManager;
+import by.issoft.store.helpers.IDBManager;
 
 import java.sql.*;
 import java.util.List;
 
 public class DBPopulator implements IPopulator {
 
-    public DBManager dbManager;
+    public IDBManager dbManager;
 
     public DBPopulator(){
 
         this.dbManager = new DBManager();
+    }
+
+    public DBPopulator(IDBManager dbManager) {
+
+        this.dbManager = dbManager;
     }
 
     @Override
@@ -59,13 +65,13 @@ public class DBPopulator implements IPopulator {
             for (Category category: categories) {
 
                 //Insert each category into the database
-                dbManager.insertCategoryIntoTable(category.name);
+                dbManager.insertCategoryIntoDB(category.name);
 
                 List<Product> products = randomStorePopulator.getProductsForCategory(CategoryEnum.valueOf(category.name));
 
                 //Insert each product into the database
                 for (Product p: products) {
-                   dbManager.insertProductIntoTable(p.name, category.name, p.price, p.rate);
+                   dbManager.insertProductIntoDB(p.name, category.name, p.price, p.rate);
                 }
             }
 
