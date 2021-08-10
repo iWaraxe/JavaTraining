@@ -1,6 +1,8 @@
 package by.issoft.consoleApp;
 
 import by.issoft.store.Store;
+import by.issoft.store.helpers.DBManager;
+import by.issoft.store.helpers.populators.DBPopulator;
 import by.issoft.store.helpers.populators.IPopulator;
 import by.issoft.store.helpers.populators.RandomStorePopulator;
 import by.issoft.store.helpers.StoreHelper;
@@ -13,11 +15,22 @@ import java.util.Timer;
 public class StoreApp {
 
     public static void main(String[] args) {
+
+        IPopulator populator;
+
         try {
             Store onlineStore = new Store();
             StoreHelper storeHelper = new StoreHelper(onlineStore);
 
-            IPopulator populator = new RandomStorePopulator();
+            boolean useDb = true;
+
+            if(useDb) {
+                populator = new DBPopulator();
+            }
+            else {
+                populator = new RandomStorePopulator();
+            }
+
             storeHelper.fillStore(populator);
             onlineStore.printAllCategoriesAndProduct();
 
@@ -28,7 +41,7 @@ public class StoreApp {
             Timer timer = new Timer();
             timer.schedule(new TimerCleanupTask(), 0,60000);
 
-            Boolean flag = true;
+            boolean flag = true;
             while (flag) {
 
                 System.out.println("Enter command sort/top/createOrder/quit:");
@@ -60,7 +73,7 @@ public class StoreApp {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Error: the exception was thrown with message:" + e.getMessage());
+            System.out.println("Error: the exception was thrown with message:" + e.getLocalizedMessage());
         }
     }
 }
