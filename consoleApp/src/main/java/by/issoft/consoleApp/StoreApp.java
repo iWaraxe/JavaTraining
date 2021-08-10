@@ -1,10 +1,7 @@
 package by.issoft.consoleApp;
 
 import by.issoft.store.Store;
-import by.issoft.store.helpers.DBManager;
-import by.issoft.store.helpers.populators.DBPopulator;
-import by.issoft.store.helpers.populators.IPopulator;
-import by.issoft.store.helpers.populators.RandomStorePopulator;
+import by.issoft.store.helpers.populators.*;
 import by.issoft.store.helpers.StoreHelper;
 import by.issoft.store.helpers.TimerCleanupTask;
 
@@ -16,19 +13,25 @@ public class StoreApp {
 
     public static void main(String[] args) {
 
-        IPopulator populator;
+        IPopulator populator = null;
 
         try {
             Store onlineStore = new Store();
             StoreHelper storeHelper = new StoreHelper(onlineStore);
 
-            boolean useDb = true;
+            //Define populator type
+            PopulatorEnum populatorType = PopulatorEnum.HttpPopulator;
 
-            if(useDb) {
-                populator = new DBPopulator();
-            }
-            else {
-                populator = new RandomStorePopulator();
+            switch (populatorType) {
+                case RandomStorePopulator:
+                    populator = new RandomStorePopulator();
+                    break;
+                case DBPopulator:
+                    populator = new DBPopulator();
+                    break;
+                case HttpPopulator:
+                    populator = new HttpPopulator();
+                    break;
             }
 
             storeHelper.fillStore(populator);
@@ -39,12 +42,12 @@ public class StoreApp {
 
             //Cleanup purchased product list products every 30 seconds
             Timer timer = new Timer();
-            timer.schedule(new TimerCleanupTask(), 0,60000);
+            timer.schedule(new TimerCleanupTask(), 0, 60000);
 
             boolean flag = true;
             while (flag) {
 
-                System.out.println("Enter command sort/top/createOrder/quit:");
+                System.out.println("Enter command sort/top/addToCart/createOrder/quit:");
                 String command = reader.readLine();
 
                 System.out.println("Your command is : " + command);
@@ -55,6 +58,20 @@ public class StoreApp {
                     case "top":
                         System.out.println("Print top 5 products sorted via price desc.");
                         onlineStore.printListProducts(storeHelper.getTop5());
+                        break;
+                    case "addToCart":
+                        System.out.println("Enter name of product to add to cart:");
+                        String product = reader.readLine();
+
+                        if (populator instanceof HttpPopulator) {
+                            ((HttpPopulator) populator).addToCart(product);
+
+                            System.out.println("Products in the cart:");
+                            onlineStore.printListProducts(((HttpPopulator) populator).getProductsInCart());
+                        }
+                        else {
+                            System.out.println("'Add to Cart' command is not available for types other than HttpPopulator.");
+                        }
                         break;
                     case "createOrder":
                         System.out.println("Enter name of product to order:");
