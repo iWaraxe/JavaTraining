@@ -12,9 +12,6 @@ public class Category {
         this.name = name;
     }
 
-    public Category() {
-    }
-
     public void addProducts(List<Product> products) {
         if (productList == null) {
             productList = new ArrayList<>();
