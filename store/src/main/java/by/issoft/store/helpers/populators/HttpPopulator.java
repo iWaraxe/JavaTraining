@@ -79,7 +79,7 @@ public class HttpPopulator implements IHttpPopulator {
     }
 
     @Override
-    public void addToCart(String productName) {
+    public void addToCart(String productName) throws Exception {
 
         HttpPost httppost = new HttpPost(String.format(server.CART_URL));
 
@@ -88,11 +88,12 @@ public class HttpPopulator implements IHttpPopulator {
 
         } catch (UnsupportedEncodingException | JsonProcessingException e) {
             System.out.println("Error when adding product to cart via HTTP : " + e.getLocalizedMessage());
+            throw new Exception();
         }
     }
 
     @Override
-    public List<Product> getProductsInCart() {
+    public List<Product> getProductsInCart() throws Exception {
 
         try {
             HttpGet request = new HttpGet(String.format(server.CART_URL));
@@ -108,9 +109,8 @@ public class HttpPopulator implements IHttpPopulator {
 
         } catch (IOException e) {
             System.out.println("Error when getting all products from the cart via HTTP : " + e.getLocalizedMessage());
+            throw new Exception();
         }
-
-        return null;
     }
 
     private void createClient(){

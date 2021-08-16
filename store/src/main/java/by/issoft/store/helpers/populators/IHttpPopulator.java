@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface IHttpPopulator extends IPopulator {
 
-    void addToCart(String productName);
-    List<Product> getProductsInCart();
+    void addToCart(String productName) throws Exception;
+    List<Product> getProductsInCart() throws Exception;
 }
