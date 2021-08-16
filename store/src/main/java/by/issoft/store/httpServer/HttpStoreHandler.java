@@ -9,13 +9,16 @@ import java.io.OutputStream;
 
 public class HttpStoreHandler implements HttpHandler {
 
-    public Object ResponseObject;
+    private String response;
+
+    protected void generateResponse(Object object) throws IOException {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        response = objectMapper.writeValueAsString(object);
+    }
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        String response = objectMapper.writeValueAsString(ResponseObject);
 
         httpExchange.sendResponseHeaders(200, response.length());
         OutputStream os = httpExchange.getResponseBody();

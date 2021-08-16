@@ -15,7 +15,7 @@ public class GetCartHandler extends HttpStoreHandler {
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
 
-        super.ResponseObject = server.getProductsInCart();
+        super.generateResponse(server.getProductsInCart());
         super.handle(httpExchange);
     }
 }
