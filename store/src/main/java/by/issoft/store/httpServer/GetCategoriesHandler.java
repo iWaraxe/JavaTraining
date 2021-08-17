@@ -12,10 +12,8 @@ public class GetCategoriesHandler extends HttpStoreHandler {
         this.server = server;
     }
 
-    @Override
     public void handle(HttpExchange httpExchange) throws IOException {
 
-        super.generateResponse(server.getCategories());
-        super.handle(httpExchange);
+        super.handle(httpExchange, server.getCategories());
     }
 }
