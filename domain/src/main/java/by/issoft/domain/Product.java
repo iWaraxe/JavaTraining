@@ -12,6 +12,9 @@ public class Product {
         this.rate = rate;
     }
 
+    public Product() {
+    }
+
     @Override
     public String toString() {
 
